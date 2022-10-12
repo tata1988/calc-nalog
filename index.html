@@ -228,12 +228,12 @@
             <form class="calc__form">
               <div class="calc__radio-wrapper">
                 <label class="calc__label calc__label_radio">
-                  <input class="calc__radio" type="radio" name="type">
+                  <input class="calc__radio" type="radio" name="type" value="ip">
                   <span class="calc__text">ИП</span>
                 </label>
 
                 <label class="calc__label calc__label_radio">
-                  <input class="calc__radio" type="radio" name="type">
+                  <input class="calc__radio" type="radio" name="type" value="ooo">
                   <span class="calc__text">ООО</span>
                 </label>
 
@@ -241,17 +241,17 @@
 
               <label class="calc__label calc__label_input">
                 <span class="calc__text">Доходы</span>
-                <input class="calc__input" type="number" name="a">
+                <input class="calc__input" type="number" name="osnoIncome">
               </label>
 
               <label class="calc__label calc__label_input">
                 <span class="calc__text">Расходы</span>
-                <input class="calc__input" type="number" name="b">
+                <input class="calc__input" type="number" name="osnoExpenses">
               </label>
 
               <label class="calc__label calc__label_input">
                 <span class="calc__text">Имущество</span>
-                <input class="calc__input" type="number" name="c">
+                <input class="calc__input" type="number" name="osnoProperty">
               </label>
             </form>
           </div>
@@ -261,27 +261,27 @@
 
             <div class="result__block">
               <p class="result__caption">НДС</p>
-              <p class="result__tax">0</p>
+              <p class="result__tax result__tax_osno-nds">0</p>
             </div>
 
             <div class="result__block">
               <p class="result__caption">Налог на имущество</p>
-              <p class="result__tax">0</p>
+              <p class="result__tax result__tax_osno-property">0</p>
             </div>
 
-            <div class="result__block">
+            <div class="result__block result__block_deduction">
               <p class="result__caption">НДФЛ(Вычет в виде расходов)</p>
-              <p class="result__tax">0</p>
+              <p class="result__tax result__tax_osno-expense">0</p>
             </div>
 
-            <div class="result__block">
+            <div class="result__block result__block_deduction">
               <p class="result__caption">НДФЛ(Вычет 20% от доходов)</p>
-              <p class="result__tax">0</p>
+              <p class="result__tax result__tax_osno-income">0</p>
             </div>
 
-            <div class="result__block">
+            <div class="result__block result__block_profit">
               <p class="result__caption">Налог на прибыль 20%</p>
-              <p class="result__tax">0</p>
+              <p class="result__tax result__tax_osno-profit">0</p>
             </div>
           </div>
         </div>

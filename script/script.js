@@ -7,28 +7,30 @@ const formatCurrency = n =>
         maximumFractionDigits: 2,
     }).format(n);
 
-
 const navigationLinks = document.querySelectorAll('.navigation__link');
 const calcElems = document.querySelectorAll('.calc');
 
-for (let i = 0; i < navigationLinks.length; i++) {
-    navigationLinks[i].addEventListener('click', (e) => {
+navigationLinks.forEach((elemClick) => {
+    elemClick.addEventListener('click', (e) => {
         e.preventDefault();
-
-        for (let j = 0; j < calcElems.length; j++) {
-            if (navigationLinks[i].dataset.tax === calcElems[j].dataset.tax) {
-                calcElems[j].classList.add('calc_active');
-                navigationLinks[j].classList.add('navigation__link_active');
+        navigationLinks.forEach(elem => {
+            if (elemClick === elem) {
+                elem.classList.add('navigation__link_active');
             } else {
-                calcElems[j].classList.remove('calc_active');
-                navigationLinks[j].classList.remove('navigation__link_active');
+                elem.classList.remove('navigation__link_active');
             }
-        }
-    });
-}
+        });
+        calcElems.forEach((calc) => {
+            if (elemClick.dataset.tax === calc.dataset.tax) {
+                calc.classList.add('calc_active');
+            } else {
+                calc.classList.remove('calc_active');
+            }
+        });
+    })
+})
 
 // AUSN
-
 const ausn = document.querySelector('.ausn');
 const formAusn = ausn.querySelector('.calc__form');
 const resultTaxTotal = ausn.querySelector('.result__tax_total');
@@ -42,16 +44,13 @@ formAusn.addEventListener('input', () => {
         resultTaxTotal.textContent = formatCurrency(formAusn.income.value * 0.08);
         formAusn.expenses.value = '';
     }
-
     if (formAusn.type.value === 'expenses') {
         resultTaxTotal.textContent = formatCurrency((formAusn.income.value - formAusn.expenses.value) * 0.2);
         calcLabelExpenses.style.display = 'block';
     }
-
 });
 
 // Самозанятый/НПД
-
 const selfEmployment = document.querySelector('.self-employment');
 const formSelfEmployment = selfEmployment.querySelector('.calc__form');
 const resultTaxSelfEmployment = selfEmployment.querySelector('.result__tax');
@@ -62,14 +61,12 @@ const resultTaxCompensation = selfEmployment.querySelector('.result__tax_compens
 const resultTaxRestCompensation = selfEmployment.querySelector('.result__tax_rest-compensation');
 const resultTaxResult = selfEmployment.querySelector('.result__tax_result');
 
-
 // ф-я налоговый вычет
 const checkCompensation = () => {
     // если стоит галочка "Налоговый вычет", то показать label "Остаток вычета"
     const setDisplay = formSelfEmployment.addCompensation.checked ? 'block' : 'none';
 
     calcCompensation.style.display = setDisplay;
-
     resultBlockCompensation.forEach((elem) => {
         elem.style.display = setDisplay;
     })
@@ -104,5 +101,37 @@ formSelfEmployment.addEventListener('input', () => {
     resultTaxRestCompensation.textContent = formatCurrency(finalBenefit);
     resultTaxResult.textContent = formatCurrency(finalTax);
 });
+
+// ОСН/ОСНО 
+
+const osno = document.querySelector('.osno');
+const formOsno = osno.querySelector('.calc__form');
+const resultBlockDeduction = osno.querySelectorAll('.result__block_deduction');
+const resultBlockProfit = osno.querySelector('.result__block_profit');
+
+/* const resultTaxOsnoNds = osno.querySelector('.result__tax_osno-nds');
+const resultTaxOsnoProperty = osno.querySelector('.result__tax_osno-property');
+const resultTaxOsnoExpense = osno.querySelector('.result__tax_osno-expense');
+const resultTaxOsnoIncome = osno.querySelector('.result__tax_osno-income');
+const resultTaxOsnoProfit = osno.querySelector('.result__tax_osno-profit');
+ */
+
+formOsno.addEventListener('input', (e) => {
+    e.preventDefault();
+
+    if (formOsno.type.value === 'ip') {
+        resultBlockProfit.style.display = 'none';
+        resultBlockDeduction.forEach(block => {
+            block.style.display = 'block';
+        })
+    }
+
+    if (formOsno.type.value === 'ooo') {
+        resultBlockDeduction.forEach(block => {
+            block.style.display = 'none';
+        })
+        resultBlockProfit.style.display = 'block';
+    }
+})
 
 
