@@ -161,39 +161,39 @@
 
               <div class="calc__radio-wrapper">
                 <label class="calc__label calc__label_radio">
-                  <input class="calc__radio" type="radio" name="type">
+                  <input class="calc__radio" type="radio" name="typeTax" value="income" checked>
                   <span class="calc__text">Доходы</span>
                 </label>
 
                 <label class="calc__label calc__label_radio">
-                  <input class="calc__radio" type="radio" name="type">
+                  <input class="calc__radio" type="radio" name="typeTax" value="ip-expenses">
                   <span class="calc__text">ИП, Доходы минус расходы</span>
                 </label>
 
                 <label class="calc__label calc__label_radio">
-                  <input class="calc__radio" type="radio" name="type">
+                  <input class="calc__radio" type="radio" name="typeTax" value="ooo-expenses">
                   <span class="calc__text">ООО, Доходы минус расходы</span>
                 </label>
               </div>
 
               <label class="calc__label calc__label_input">
                 <span class="calc__text">Доходы</span>
-                <input class="calc__input" type="number" name="a">
+                <input class="calc__input" type="number" name="income">
               </label>
 
-              <label class="calc__label calc__label_input">
+              <label class="calc__label calc__label_expenses calc__label_input">
                 <span class="calc__text">Расходы</span>
-                <input class="calc__input" type="number" name="b">
+                <input class="calc__input" type="number" name="expenses">
               </label>
 
               <label class="calc__label calc__label_input">
                 <span class="calc__text">Сумма взносов за себя и сотрудников</span>
-                <input class="calc__input" type="number" name="с">
+                <input class="calc__input" type="number" name="сontributions">
               </label>
 
-              <label class="calc__label calc__label_input">
+              <label class="calc__label calc__label_property calc__label_input">
                 <span class="calc__text">Имущество</span>
-                <input class="calc__input" type="number" name="d">
+                <input class="calc__input" type="number" name="property">
               </label>
             </form>
           </div>
@@ -203,12 +203,12 @@
 
             <div class="result__block">
               <p class="result__caption">Налог</p>
-              <p class="result__tax">0</p>
+              <p class="result__tax result__tax_total">0</p>
             </div>
 
-            <div class="result__block">
+            <div class="result__block result__block_property">
               <p class="result__caption">Налог на имущество 2%</p>
-              <p class="result__tax">0</p>
+              <p class="result__tax result__tax_property">0</p>
             </div>
           </div>
         </div>
@@ -228,12 +228,12 @@
             <form class="calc__form">
               <div class="calc__radio-wrapper">
                 <label class="calc__label calc__label_radio">
-                  <input class="calc__radio" type="radio" name="type" value="ip">
+                  <input class="calc__radio" type="radio" name="formBusiness" value="ip" checked>
                   <span class="calc__text">ИП</span>
                 </label>
 
                 <label class="calc__label calc__label_radio">
-                  <input class="calc__radio" type="radio" name="type" value="ooo">
+                  <input class="calc__radio" type="radio" name="formBusiness" value="ooo">
                   <span class="calc__text">ООО</span>
                 </label>
 
