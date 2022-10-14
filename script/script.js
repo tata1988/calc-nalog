@@ -7,6 +7,23 @@ const formatCurrency = n =>
         maximumFractionDigits: 2,
     }).format(n);
 
+const debounceTimer = (fn, msec) => {
+    let lastCall = 0;
+    let lastCallTimer = NaN;
+
+    return (...arg) => {
+        const previousCall = lastCall;
+        lastCall = Date.now();
+
+        if (previousCall && ((lastCall - previousCall) <= msec)) {
+            clearTimeout()
+        }
+        lastCallTimer = setTimeout(() => {
+            fn(...arg);
+        }, msec)
+
+    }
+}
 
 //навигация
 {
@@ -43,17 +60,20 @@ const formatCurrency = n =>
 
     calcLabelExpenses.style.display = 'none';
 
-    formAusn.addEventListener('input', () => {
+    formAusn.addEventListener('input', debounceTimer(() => {
+        const income = +formAusn.income.value;
         if (formAusn.type.value === 'income') {
             calcLabelExpenses.style.display = 'none';
-            resultTaxTotal.textContent = formatCurrency(formAusn.income.value * 0.08);
+            resultTaxTotal.textContent = formatCurrency(income * 0.08);
             formAusn.expenses.value = '';
         }
         if (formAusn.type.value === 'expenses') {
-            resultTaxTotal.textContent = formatCurrency((formAusn.income.value - formAusn.expenses.value) * 0.2);
-            calcLabelExpenses.style.display = 'block';
+            calcLabelExpenses.style.display = '';
+            const expenses = +formAusn.expenses.value;
+            const profit = income < expenses ? 0 : income - expenses;
+            resultTaxTotal.textContent = formatCurrency(profit * 0.2);
         }
-    });
+    }, 500));
 }
 
 {
@@ -81,21 +101,23 @@ const formatCurrency = n =>
 
     checkCompensation();
 
-    formSelfEmployment.addEventListener('input', () => {
-        const resultIndividual = formSelfEmployment.individual.value * 0.04;
-        const resultEntity = formSelfEmployment.entity.value * 0.06;
+    formSelfEmployment.addEventListener('input', debounceTimer(() => {
+        const individual = +formSelfEmployment.individual.value;
+        const entity = +formSelfEmployment.entity.value;
+        const resultIndividual = individual * 0.04;
+        const resultEntity = entity * 0.06;
 
         checkCompensation();
         //вывод рез-та 
         const tax = resultIndividual + resultEntity;
+        const compensation = +formSelfEmployment.compensation.value;
         formSelfEmployment.compensation.value =
-            formSelfEmployment.compensation.value > 10000
+            +formSelfEmployment.compensation.value > 10000
                 ? 10000
                 : formSelfEmployment.compensation.value;
-        const benefit = formSelfEmployment.compensation.value;
+        const benefit = +formSelfEmployment.compensation.value;
 
-        const resBenefit = formSelfEmployment.individual.value * 0.01 +
-            formSelfEmployment.entity.value * 0.02;
+        const resBenefit = individual * 0.01 + entity * 0.02;
 
         const finalBenefit = benefit - resBenefit > 0 ? benefit - resBenefit : 0;
 
@@ -107,7 +129,7 @@ const formatCurrency = n =>
         resultTaxCompensation.textContent = formatCurrency(benefit - finalBenefit);
         resultTaxRestCompensation.textContent = formatCurrency(finalBenefit);
         resultTaxResult.textContent = formatCurrency(finalTax);
-    });
+    }, 300));
 }
 
 {
@@ -141,27 +163,27 @@ const formatCurrency = n =>
         }
     }
 
-    formOsno.addEventListener('input', (e) => {
-        e.preventDefault();
+    formOsno.addEventListener('input', debounceTimer(() => {
+        
         checkFormBusiness();
 
-        const income = formOsno.osnoIncome.value;
-        const expenses = formOsno.osnoExpenses.value;
-        const property = formOsno.osnoProperty.value;
+        const income = +formOsno.osnoIncome.value;
+        const expenses = +formOsno.osnoExpenses.value;
+        const property = +formOsno.osnoProperty.value;
 
         const nds = income * 0.2;
         const taxProperty = property * 0.02;
-        const profit = income - expenses;
+        const profit = income < expenses ? 0 : income - expenses;
         const ndfExpensesTotal = profit * 0.13;
         const ndfIncomeTotal = (income - nds) * 0.13;
         const taxProfit = profit * 0.2;
 
-        resultTaxOsnoNds.textContent = nds;
-        resultTaxOsnoProperty.textContent = taxProperty;
-        resultTaxOsnoExpense.textContent = ndfExpensesTotal;
-        resultTaxOsnoIncome.textContent = ndfIncomeTotal;
-        resultTaxOsnoProfit.textContent = taxProfit;
-    })
+        resultTaxOsnoNds.textContent = formatCurrency(nds);
+        resultTaxOsnoProperty.textContent = formatCurrency(taxProperty);
+        resultTaxOsnoExpense.textContent = formatCurrency(ndfExpensesTotal);
+        resultTaxOsnoIncome.textContent = formatCurrency(ndfIncomeTotal);
+        resultTaxOsnoProfit.textContent = formatCurrency(taxProfit);
+    }, 500))
 }
 
 {
@@ -235,15 +257,15 @@ const formatCurrency = n =>
 
     typeTax[formUsn.typeTax.value]();
 
-    formUsn.addEventListener('input', (e) => {
-        e.preventDefault();
+    formUsn.addEventListener('input', debounceTimer(() => {
+       
         typeTax[formUsn.typeTax.value]();
         //checkShopProperty(formUsn.typeTax.value);
 
-        const income = formUsn.income.value;
-        const expenses = formUsn.expenses.value;
-        const сontributions = formUsn.сontributions.value;
-        const property = formUsn.property.value;
+        const income = +formUsn.income.value;
+        const expenses = +formUsn.expenses.value;
+        const сontributions = +formUsn.сontributions.value;
+        const property = +formUsn.property.value;
 
         let profit = income - сontributions;
 
@@ -255,11 +277,37 @@ const formatCurrency = n =>
         const summ = profit - (taxBigIncome < 0 ? 0 : taxBigIncome);
         const tax = summ * percent[formUsn.typeTax.value];
         const taxProperty = property * 0.02;
-        
-        resultTaxTotal.textContent = formatCurrency(tax);
+
+        resultTaxTotal.textContent = formatCurrency(tax < 0 ? 0 : tax);
         resultTaxProperty.textContent = formatCurrency(taxProperty);
-
-
-
-    });
+    }, 500));
 };
+
+{
+    // 13%
+
+    const taxReturn = document.querySelector('.tax-return');
+    const formTaxReturn = taxReturn.querySelector('.calc__form');
+    const resultTaxNdflconst = taxReturn.querySelector('.result__tax_ndfl');
+    const resultTaxPossible = taxReturn.querySelector('.result__tax_possible');
+    const resultTaxDeduction = taxReturn.querySelector('.result__tax_deduction');
+    let timer;
+
+    formTaxReturn.addEventListener('input', debounceTimer(() => {
+
+        const expenses = +formTaxReturn.expenses.value;
+        const income = +formTaxReturn.income.value;
+        const sumExpense = +formTaxReturn.sumExpenses.value;
+        const ndfl = income * 0.13;
+        const possibleDeduction = expenses < 120000
+            ? expenses * 0.13
+            : sumExpense * 0.13;
+
+        const deduction = possibleDeduction < ndfl ? possibleDeduction : ndfl;
+        resultTaxNdflconst.textContent = formatCurrency(ndfl);
+        resultTaxPossible.textContent = formatCurrency(possibleDeduction);
+        resultTaxDeduction.textContent = formatCurrency(deduction);
+
+
+    }, 500))
+}
